@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AlamofireImage
 
 //how to create table view
 //STEP 1: add UITableViewDataSource and UITableViewDelegate
@@ -28,8 +29,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         cell.synopsisLabel.text = synopsis
         
         let baseUrl = "https://image.tmdb.org/t/p/w185"
-        let posterPath = movie["posterpath"] as! String
-        let posterUrl = URL(string: baseUrl + posterPath)
+        let posterPath = movie["poster_path"] as! String
+        let posterUrl = URL(string: baseUrl + posterPath)!
+        
+        cell.posterView.af_setImage(withURL: posterUrl)
         
         return cell
     }
