@@ -16,11 +16,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return movies.count
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieCell") as! MovieCell
         //gives recycled cell
-        
+    
         let movie = movies[indexPath.row]
         let title = movie["title"] as! String
         let synopsis = movie["overview"] as! String
@@ -38,6 +37,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     
+    
+    
     @IBOutlet weak var tableView: UITableView!
     var movies = [[String:Any]]()
     //collection of an array of dictionaries
@@ -48,8 +49,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         //STEP 3: call two functions from STEP 2
         tableView.dataSource = self
         tableView.delegate = self
-
-        print("hello")
+        
+        
+       
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
@@ -62,7 +64,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                  
                  self.movies = dataDictionary["results"] as! [[String:Any]]
                  self.tableView.reloadData() //calls functions from STEP 2 again
-                 print(dataDictionary)
+                 //print(dataDictionary)
 
                     // TODO: Get the array of movies
                     // TODO: Store the movies in a property to use elsewhere
@@ -72,6 +74,23 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         task.resume()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //1. find the selected movie
+        let cell = sender as! UITableViewCell //sender is the table view cell
+        
+        let indexPath = tableView.indexPath(for: cell)! //table view knows for a given cell, what the indexPath is
+        let movie = movies[indexPath.row]
+        
+        //2. pass the selected movie to the details view controller
+        let detailsViewController = segue.destination as! MovieDetailsViewController
+        detailsViewController.movie = movie
+        tableView.deselectRow(at: indexPath, animated: true) //unhighlights selected row, finishing touches
+        
+       
+    }
+    
+    
 
 
 }
